@@ -9,43 +9,43 @@ using namespace std::filesystem;
 
 static void RemoveTrailingBlanks(const path& pth)
 {
-    bool fHasTrailingBlanks = false;
-    string strContent;
-    string strOldLine;
+    bool has_blanks = false;
+    string content;
+    string line;
 
-    ifstream ifsOldFile(pth);
-    if (!ifsOldFile.is_open()) {
+    ifstream orig_file(pth);
+    if (!orig_file.is_open()) {
         return;
     }
-    while (getline(ifsOldFile, strOldLine)) {
-        string_view sv(strOldLine);
+    while (getline(orig_file, line)) {
+        string_view sv(line);
         if (!sv.empty() && (sv.back() == ' ' || sv.back() == '\t')) {
-            fHasTrailingBlanks = true;
+            has_blanks = true;
             sv.remove_suffix(sv.size() - sv.find_last_not_of(" \t") - 1);
         }
-        strContent += sv;
-        strContent += '\n';
+        content += sv;
+        content += '\n';
     }
-    ifsOldFile.close();
+    orig_file.close();
 
-    if (fHasTrailingBlanks) {
-        path pthNew(pth.string() + ".tmp");
-        ofstream ofsNewFile(pthNew);
-        if (!ofsNewFile.is_open()) {
+    if (has_blanks) {
+        path temp_path(pth.string() + ".tmp");
+        ofstream new_file(temp_path);
+        if (!new_file.is_open()) {
             return;
         }
-        ofsNewFile << strContent;
-        ofsNewFile.close();
+        new_file << content;
+        new_file.close();
         remove(pth);
-        rename(pthNew, pth);
+        rename(temp_path, pth);
     }
 }
 
-static void FindRecursive(const path& pth, const vector<string>& exts)
+static void ProcessDir(const path& pth, const vector<string>& exts)
 {
     for (auto& file : directory_iterator(pth)) {
         if (is_directory(file)) {
-            FindRecursive(file, exts);
+            ProcessDir(file, exts);
         }
         else {
             path filePath = file.path();
@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
         exts = { ".h", ".c", ".hpp", ".cpp" };
     }
 
-    FindRecursive(current_path(), exts);
+    ProcessDir(current_path(), exts);
 
     return 0;
 }

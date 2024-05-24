@@ -10,7 +10,7 @@ using namespace std::filesystem;
 static void RemoveTrailingBlanks(const path& pth)
 {
     bool has_blanks = false;
-    string content;
+    ostringstream content;
     string line;
 
     ifstream orig_file(pth);
@@ -24,8 +24,7 @@ static void RemoveTrailingBlanks(const path& pth)
             auto it = find_if_not(sv.rbegin(), sv.rend(), [](char c) { return isspace(c); });
             sv.remove_suffix(it - sv.rbegin());
         }
-        content += sv;
-        content += '\n';
+        content << sv << '\n';
     }
     orig_file.close();
 
@@ -35,7 +34,7 @@ static void RemoveTrailingBlanks(const path& pth)
         if (!new_file.is_open()) {
             return;
         }
-        new_file << content;
+        new_file << content.str();
         new_file.close();
         remove(pth);
         rename(temp_path, pth);

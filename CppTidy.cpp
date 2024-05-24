@@ -19,9 +19,10 @@ static void RemoveTrailingBlanks(const path& pth)
     }
     while (getline(orig_file, line)) {
         string_view sv(line);
-        if (!sv.empty() && (sv.back() == ' ' || sv.back() == '\t')) {
+        if (!sv.empty() && isspace(sv.back())) {
             has_blanks = true;
-            sv.remove_suffix(sv.size() - sv.find_last_not_of(" \t") - 1);
+            auto it = find_if_not(sv.rbegin(), sv.rend(), [](char c) { return isspace(c); });
+            sv.remove_suffix(it - sv.rbegin());
         }
         content += sv;
         content += '\n';

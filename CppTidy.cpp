@@ -25,7 +25,10 @@ static void RemoveTrailingBlanks(const path& pth)
             auto it = find_if_not(sv.rbegin(), sv.rend(), [](char c) { return isspace(c); });
             sv.remove_suffix(it - sv.rbegin());
         }
-        content << sv << '\n';
+        content << sv;
+        if (!orig_file.eof()) {
+            content << '\n';
+        }
     }
     orig_file.close();
 

@@ -12,14 +12,13 @@ static void RemoveTrailingBlanks(const path& pth)
     bool has_blanks = false;
     ostringstream content;
     string line;
-    string_view sv;
 
     ifstream orig_file(pth);
     if (!orig_file.is_open()) {
         return;
     }
     while (getline(orig_file, line)) {
-        sv = line;
+        string_view sv(line);
         if (!sv.empty() && isspace(sv.back())) {
             has_blanks = true;
             auto it = find_if_not(sv.rbegin(), sv.rend(), [](char c) { return isspace(c); });

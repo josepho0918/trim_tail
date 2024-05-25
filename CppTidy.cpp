@@ -33,7 +33,7 @@ static void RemoveTrailingBlanks(const path& pth)
     orig_file.close();
 
     if (has_blanks) {
-        path temp_path(pth.string() + ".tmp");
+        const path temp_path(pth.string() + ".tmp");
         ofstream new_file(temp_path);
         if (!new_file.is_open()) {
             return;
@@ -49,8 +49,8 @@ static void ProcessDir(const path& pth, const unordered_set<string>& exts)
 {
     for (auto& file : recursive_directory_iterator(pth, directory_options::skip_permission_denied)) {
         if (file.is_regular_file()) {
-            path file_path = file.path();
-            path file_ext = file_path.extension();
+            const path& file_path = file.path();
+            const path& file_ext = file_path.extension();
             if (exts.count(file_ext.string())) {
                 RemoveTrailingBlanks(file_path);
                 cout << file_path.filename() << endl;

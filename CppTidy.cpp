@@ -50,7 +50,7 @@ static void ProcessDir(const path& pth, const unordered_set<string>& exts)
         if (file.is_regular_file()) {
             const path& file_path = file.path();
             const path& file_ext = file_path.extension();
-            if (exts.count(file_ext.string())) {
+            if (exts.find(file_ext.string()) != exts.cend()) {
                 RemoveTrailingBlanks(file_path);
                 cout << file_path.filename() << endl;
             }

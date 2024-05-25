@@ -44,11 +44,8 @@ static void RemoveTrailingBlanks(const path& pth)
 
 static void ProcessDir(const path& pth, const unordered_set<string>& exts)
 {
-    for (auto& file : directory_iterator(pth)) {
-        if (is_directory(file)) {
-            ProcessDir(file, exts);
-        }
-        else {
+    for (auto& file : recursive_directory_iterator(pth)) {
+        if (!is_directory(file)) {
             path file_path = file.path();
             path file_ext = file_path.extension();
             if (exts.find(file_ext.string()) != exts.cend()) {

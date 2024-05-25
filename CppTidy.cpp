@@ -1,8 +1,8 @@
-﻿#include <array>
-#include <filesystem>
+﻿#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <unordered_set>
 
 using namespace std;
 using namespace std::filesystem;
@@ -41,18 +41,18 @@ static void RemoveTrailingBlanks(const path& pth)
     }
 }
 
-static void ProcessDir(const path& pth, const vector<string>& exts)
+static void ProcessDir(const path& pth, const unordered_set<string>& exts)
 {
     for (auto& file : directory_iterator(pth)) {
         if (is_directory(file)) {
             ProcessDir(file, exts);
         }
         else {
-            path filePath = file.path();
-            auto fileExt = filePath.extension();
-            if (auto it = find(exts.cbegin(), exts.cend(), fileExt); it != exts.cend()) {
-                RemoveTrailingBlanks(filePath);
-                cout << filePath.filename() << endl;
+            path file_path = file.path();
+            path file_ext = file_path.extension();
+            if (exts.find(file_ext.string()) != exts.cend()) {
+                RemoveTrailingBlanks(file_path);
+                cout << file_path.filename() << endl;
             }
         }
     }
@@ -60,10 +60,10 @@ static void ProcessDir(const path& pth, const vector<string>& exts)
 
 int main(int argc, char* argv[])
 {
-    vector<string> exts;
+    unordered_set<string> exts;
 
     if (argc > 1) {
-        exts.assign(argv + 1, argv + argc);
+        exts.insert(argv + 1, argv + argc);
     }
     else {
         exts = { ".h", ".c", ".hpp", ".cpp" };

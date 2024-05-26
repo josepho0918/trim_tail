@@ -27,7 +27,7 @@ static void RemoveTrailingBlanks(const path& pth)
         if (!sv.empty() && (unsigned char)sv.back() <= 127 && IsWhiteSpace(sv.back())) {
             has_blanks = true;
             auto it = find_if_not(sv.rbegin(), sv.rend(), IsWhiteSpace);
-            sv.remove_suffix(it - sv.rbegin());
+            sv.remove_suffix(distance(sv.rbegin(), it));
         }
         content << sv;
         if (!file.eof()) {

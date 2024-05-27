@@ -16,13 +16,12 @@ static void RemoveTrailingBlanks(const path& pth)
     bool has_blanks = false;
     ostringstream content;
     string line;
-    fstream file;
 
-    file.open(pth, ios::in);
-    if (!file.is_open()) {
+    ifstream orig_file(pth);
+    if (!orig_file.is_open()) {
         return;
     }
-    while (getline(file, line)) {
+    while (getline(orig_file, line)) {
         string_view sv(line);
         if (!sv.empty() && IsWhiteSpace(sv.back())) {
             has_blanks = true;
@@ -30,20 +29,20 @@ static void RemoveTrailingBlanks(const path& pth)
             sv.remove_suffix(distance(sv.rbegin(), it));
         }
         content << sv;
-        if (!file.eof()) {
+        if (!orig_file.eof()) {
             content << '\n';
         }
     }
-    file.close();
+    orig_file.close();
 
     if (has_blanks) {
         const path temp_path(pth.string() + ".tmp");
-        file.open(temp_path, ios::out | ios::trunc);
-        if (!file.is_open()) {
+        ofstream temp_file(temp_path);
+        if (!temp_file.is_open()) {
             return;
         }
-        file << content.str();
-        file.close();
+        temp_file << content.str();
+        temp_file.close();
         remove(pth);
         rename(temp_path, pth);
     }

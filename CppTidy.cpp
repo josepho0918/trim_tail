@@ -56,12 +56,10 @@ static void RemoveTrailingBlanks(const path& file_path)
 		}
 
 		while (getline(orig_file, line)) {
-			string_view sv(line);
-			if (!sv.empty() && IsWhiteSpace(sv.back())) {
-				auto it = find_if_not(sv.rbegin(), sv.rend(), IsWhiteSpace);
-				sv.remove_suffix(distance(sv.rbegin(), it));
+			while (!line.empty() && IsWhiteSpace(line.back())) {
+				line.pop_back();
 			}
-			temp_file << sv;
+			temp_file << line;
 			if (!orig_file.eof()) {
                 temp_file << '\n';
 			}

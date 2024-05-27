@@ -33,16 +33,16 @@ static bool HasTrailingBlanks(ifstream& file)
 	return result;
 }
 
-static void RemoveTrailingBlanks(const path& pth)
+static void RemoveTrailingBlanks(const path& file_path)
 {
-    ifstream orig_file(pth);
+    ifstream orig_file(file_path);
 
     if (!orig_file.is_open()) {
         return;
     }
 
     if (HasTrailingBlanks(orig_file)) {
-        const path temp_path(pth.string() + ".tmp");
+        const path temp_path(file_path.string() + ".tmp");
         ofstream temp_file(temp_path);
         string line;
 
@@ -64,21 +64,25 @@ static void RemoveTrailingBlanks(const path& pth)
 
 		orig_file.close();
 		temp_file.close();
-		remove(pth);
-		rename(temp_path, pth);
+		remove(file_path);
+		rename(temp_path, file_path);
 	}
 	else {
 		orig_file.close();
     }
 }
 
-static void ProcessDir(const path& pth, const unordered_set<string>& exts)
+static void ProcessDir(const path& dir_path, const unordered_set<string>& allowed_exts)
 {
-    for (auto& file : recursive_directory_iterator(pth, directory_options::skip_permission_denied)) {
+    for (const auto& file : recursive_directory_iterator(dir_path, directory_options::skip_permission_denied)) {
         if (file.is_regular_file()) {
             const path& file_path = file.path();
-            const path& file_ext = file_path.extension();
-            if (exts.find(file_ext.string()) != exts.cend()) {
+            const string file_ext = file_path.extension().string();
+            if (find_if(allowed_exts.cbegin(), allowed_exts.cend(),
+                [&file_ext](const string& ext) {
+                    return _stricmp(ext.c_str(), file_ext.c_str()) == 0;
+                }) != allowed_exts.cend())
+            {
                 RemoveTrailingBlanks(file_path);
                 cout << file_path.filename() << endl;
             }
@@ -88,16 +92,16 @@ static void ProcessDir(const path& pth, const unordered_set<string>& exts)
 
 int main(int argc, char* argv[])
 {
-    unordered_set<string> exts;
+    unordered_set<string> allowed_exts;
 
     if (argc > 1) {
-        exts.insert(argv + 1, argv + argc);
+        allowed_exts.insert(argv + 1, argv + argc);
     }
     else {
-        exts = { ".h", ".c", ".hpp", ".cpp" };
+        allowed_exts = { ".h", ".c", ".hpp", ".cpp" };
     }
 
-    ProcessDir(current_path(), exts);
+    ProcessDir(current_path(), allowed_exts);
 
     return 0;
 }

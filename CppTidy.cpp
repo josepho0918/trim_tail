@@ -27,6 +27,7 @@ static bool HasTrailingBlanks(ifstream& file)
 		}
 	}
 
+    file.clear();
     file.seekg(pos);
 
 	return result;

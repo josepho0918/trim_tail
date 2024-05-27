@@ -8,7 +8,7 @@ using namespace std;
 using namespace std::filesystem;
 
 static bool IsWhiteSpace(char ch) {
-    return (ch >= 0 && ch <= 127) && isspace(ch);
+    return isspace(static_cast<unsigned char>(ch));
 }
 
 static void RemoveTrailingBlanks(const path& pth)
@@ -24,7 +24,7 @@ static void RemoveTrailingBlanks(const path& pth)
     }
     while (getline(file, line)) {
         string_view sv(line);
-        if (!sv.empty() && (unsigned char)sv.back() <= 127 && IsWhiteSpace(sv.back())) {
+        if (!sv.empty() && IsWhiteSpace(sv.back())) {
             has_blanks = true;
             auto it = find_if_not(sv.rbegin(), sv.rend(), IsWhiteSpace);
             sv.remove_suffix(distance(sv.rbegin(), it));

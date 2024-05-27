@@ -56,7 +56,7 @@ static void RemoveTrailingBlanks(const path& file_path)
 		}
 
 		while (getline(orig_file, line)) {
-            line.erase(find_if_not(line.rbegin(), line.rend(), IsWhiteSpace).base(), line.end());
+            line.erase(find_if_not(line.crbegin(), line.crend(), IsWhiteSpace).base(), line.cend());
 			temp_file << line;
 			if (!orig_file.eof()) {
                 temp_file << '\n';

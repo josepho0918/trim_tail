@@ -14,7 +14,7 @@ static bool IsWhiteSpace(char ch)
 
 static char ToLowerCase(char ch)
 {
-	return tolower(ch);
+	return tolower(static_cast<unsigned char>(ch));
 }
 
 static bool HasTrailingBlanks(ifstream& file)

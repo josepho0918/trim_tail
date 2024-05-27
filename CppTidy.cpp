@@ -7,44 +7,67 @@
 using namespace std;
 using namespace std::filesystem;
 
-static bool IsWhiteSpace(char ch) {
+static bool IsWhiteSpace(char ch)
+{
     return isspace(static_cast<unsigned char>(ch));
+}
+
+static bool HasTrailingBlanks(ifstream& file)
+{
+    streampos pos = file.tellg();
+    bool result = false;
+    string line;
+
+    file.seekg(0);
+
+    while (getline(file, line)) {
+		if (!line.empty() && IsWhiteSpace(line.back())) {
+            result = true;
+            break;
+		}
+	}
+
+    file.seekg(pos);
+
+	return result;
 }
 
 static void RemoveTrailingBlanks(const path& pth)
 {
-    bool has_blanks = false;
-    ostringstream content;
-    string line;
-
     ifstream orig_file(pth);
+
     if (!orig_file.is_open()) {
         return;
     }
-    while (getline(orig_file, line)) {
-        string_view sv(line);
-        if (!sv.empty() && IsWhiteSpace(sv.back())) {
-            has_blanks = true;
-            auto it = find_if_not(sv.rbegin(), sv.rend(), IsWhiteSpace);
-            sv.remove_suffix(distance(sv.rbegin(), it));
-        }
-        content << sv;
-        if (!orig_file.eof()) {
-            content << '\n';
-        }
-    }
-    orig_file.close();
 
-    if (has_blanks) {
+    if (HasTrailingBlanks(orig_file)) {
         const path temp_path(pth.string() + ".tmp");
         ofstream temp_file(temp_path);
+        string line;
+
         if (!temp_file.is_open()) {
-            return;
-        }
-        temp_file << content.str();
-        temp_file.close();
-        remove(pth);
-        rename(temp_path, pth);
+			return;
+		}
+
+		while (getline(orig_file, line)) {
+			string_view sv(line);
+			if (!sv.empty() && IsWhiteSpace(sv.back())) {
+				auto it = find_if_not(sv.rbegin(), sv.rend(), IsWhiteSpace);
+				sv.remove_suffix(distance(sv.rbegin(), it));
+			}
+			temp_file << sv;
+			if (!orig_file.eof()) {
+                temp_file << '\n';
+			}
+		}
+
+		orig_file.close();
+		temp_file.close();
+		remove(pth);
+		rename(temp_path, pth);
+	}
+	else {
+		orig_file.close();
     }
 }
 

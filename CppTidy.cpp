@@ -56,7 +56,8 @@ static void RemoveTrailingBlanks(const path& file_path)
 		}
 
 		while (getline(orig_file, line)) {
-            line.erase(find_if_not(line.crbegin(), line.crend(), IsWhiteSpace).base(), line.cend());
+            auto it = find_if_not(line.crbegin(), line.crend(), IsWhiteSpace);
+            line.erase(it.base(), line.cend());
 			temp_file << line;
 			if (!orig_file.eof()) {
                 temp_file << '\n';
@@ -75,7 +76,9 @@ static void RemoveTrailingBlanks(const path& file_path)
 
 static void ProcessDir(const path& dir_path, const unordered_set<string>& allowed_exts)
 {
-    for (const auto& file : recursive_directory_iterator(dir_path, directory_options::skip_permission_denied)) {
+    for (const auto& file :
+        recursive_directory_iterator(dir_path, directory_options::skip_permission_denied))
+    {
         if (file.is_regular_file()) {
             const path& file_path = file.path();
             string file_ext = file_path.extension().string();

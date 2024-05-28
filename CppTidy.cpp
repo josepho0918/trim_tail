@@ -68,7 +68,6 @@ static void RemoveTrailingBlanks(const path& file_path)
 
         orig_file.close();
         temp_file.close();
-        remove(file_path);
         rename(temp_path, file_path);
     }
 }

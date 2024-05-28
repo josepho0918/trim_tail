@@ -14,7 +14,7 @@ static bool IsWhiteSpace(char ch)
 
 static char ToLowerCase(char ch)
 {
-	return tolower(static_cast<unsigned char>(ch));
+    return tolower(static_cast<unsigned char>(ch));
 }
 
 static bool HasTrailingBlanks(ifstream& file)
@@ -26,16 +26,16 @@ static bool HasTrailingBlanks(ifstream& file)
     file.seekg(0);
 
     while (getline(file, line)) {
-		if (!line.empty() && IsWhiteSpace(line.back())) {
+        if (!line.empty() && IsWhiteSpace(line.back())) {
             result = true;
             break;
-		}
-	}
+        }
+    }
 
     file.clear();
     file.seekg(pos);
 
-	return result;
+    return result;
 }
 
 static void RemoveTrailingBlanks(const path& file_path)
@@ -52,25 +52,25 @@ static void RemoveTrailingBlanks(const path& file_path)
         string line;
 
         if (!temp_file.is_open()) {
-			return;
-		}
+            return;
+        }
 
-		while (getline(orig_file, line)) {
+        while (getline(orig_file, line)) {
             auto it = find_if_not(line.crbegin(), line.crend(), IsWhiteSpace);
             line.erase(it.base(), line.cend());
-			temp_file << line;
-			if (!orig_file.eof()) {
+            temp_file << line;
+            if (!orig_file.eof()) {
                 temp_file << '\n';
-			}
-		}
+            }
+        }
 
-		orig_file.close();
-		temp_file.close();
-		remove(file_path);
-		rename(temp_path, file_path);
-	}
-	else {
-		orig_file.close();
+        orig_file.close();
+        temp_file.close();
+        remove(file_path);
+        rename(temp_path, file_path);
+    }
+    else {
+        orig_file.close();
     }
 }
 

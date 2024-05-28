@@ -89,7 +89,7 @@ static void ProcessDir(const path& dir_path, const unordered_set<string>& allowe
     for (const auto& file : recursive_directory_iterator(dir_path, directory_options::skip_permission_denied)) {
         if (file.is_regular_file()) {
             string file_ext = file.path().extension().string();
-            transform(file_ext.cbegin(), file_ext.cend(), file_ext.begin(), ToLowerCase);
+            ranges::transform(file_ext, file_ext.begin(), ToLowerCase);
             if (allowed_exts.contains(file_ext)) {
                 RemoveTrailingBlanks(file.path());
                 string file_path = file.path().string();
@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
             string str = argv[i];
-            transform(str.cbegin(), str.cend(), str.begin(), ToLowerCase);
+            ranges::transform(str, str.begin(), ToLowerCase);
             allowed_exts.insert(str);
         }
     }

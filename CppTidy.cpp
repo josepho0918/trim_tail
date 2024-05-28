@@ -38,6 +38,17 @@ static bool HasTrailingBlanks(ifstream& file)
     return result;
 }
 
+static optional<string> GetCleanLine(ifstream& file)
+{
+    if (string line;  getline(file, line)) {
+        auto it = find_if_not(line.crbegin(), line.crend(), IsWhiteSpace);
+        line.erase(it.base(), line.cend());
+        return line;
+    }
+
+    return nullopt;
+}
+
 static void RemoveTrailingBlanks(const path& file_path)
 {
     ifstream orig_file(file_path);
@@ -49,16 +60,13 @@ static void RemoveTrailingBlanks(const path& file_path)
     if (HasTrailingBlanks(orig_file)) {
         const path temp_path(file_path.string() + ".tmp");
         ofstream temp_file(temp_path);
-        string line;
 
         if (!temp_file.is_open()) {
             return;
         }
 
-        while (getline(orig_file, line)) {
-            auto it = find_if_not(line.crbegin(), line.crend(), IsWhiteSpace);
-            line.erase(it.base(), line.cend());
-            temp_file << line;
+        while (auto line = GetCleanLine(orig_file)) {
+            temp_file << *line;
             if (!orig_file.eof()) {
                 temp_file << '\n';
             }

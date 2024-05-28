@@ -51,13 +51,7 @@ static optional<string> GetCleanLine(ifstream& file)
 
 static void RemoveTrailingBlanks(const path& file_path)
 {
-    ifstream orig_file(file_path);
-
-    if (!orig_file.is_open()) {
-        return;
-    }
-
-    if (HasTrailingBlanks(orig_file)) {
+    if (ifstream orig_file(file_path); HasTrailingBlanks(orig_file)) {
         const path temp_path(file_path.string() + ".tmp");
         ofstream temp_file(temp_path);
 
@@ -76,9 +70,6 @@ static void RemoveTrailingBlanks(const path& file_path)
         temp_file.close();
         remove(file_path);
         rename(temp_path, file_path);
-    }
-    else {
-        orig_file.close();
     }
 }
 

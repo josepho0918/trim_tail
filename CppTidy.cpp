@@ -92,6 +92,7 @@ static void ProcessDir(const path& dir_path, const unordered_set<string>& allowe
 
 int main(int argc, char* argv[])
 {
+    auto start = chrono::high_resolution_clock::now();
     unordered_set<string> allowed_exts;
 
     if (argc > 1) {
@@ -106,6 +107,10 @@ int main(int argc, char* argv[])
     }
 
     ProcessDir(current_path(), allowed_exts);
+
+    auto end = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+    cout << "Elapsed time: " << duration.count() << " ms" << endl;
 
     return 0;
 }

@@ -41,8 +41,7 @@ static bool HasTrailingBlanks(ifstream& file)
 static optional<string> GetCleanLine(ifstream& file)
 {
     if (string line;  getline(file, line)) {
-        auto it = find_if_not(line.crbegin(), line.crend(), IsWhiteSpace);
-        line.erase(it.base(), line.cend());
+        line.erase(find_if_not(line.crbegin(), line.crend(), IsWhiteSpace).base());
         return line;
     }
 

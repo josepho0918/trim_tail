@@ -83,7 +83,7 @@ static void ProcessDir(const path& dir_path, const unordered_set<string>& allowe
                 RemoveTrailingBlanks(file.path());
                 string file_path = file.path().string();
                 string_view sv(file_path);
-                sv.remove_prefix(dir_path.string().size());
+                sv.remove_prefix(dir_path.string().size() + 1);
                 cout << sv << endl;
             }
         }

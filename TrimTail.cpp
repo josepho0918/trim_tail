@@ -8,7 +8,6 @@
 using namespace std;
 using namespace std::filesystem;
 
-static const path dir_path = current_path();
 static mutex mut;
 
 static bool IsWhiteSpace(char ch)
@@ -52,14 +51,6 @@ static optional<string> GetCleanLine(ifstream& file)
     return nullopt;
 }
 
-static void PrintFile(string_view sv)
-{
-    sv.remove_prefix(dir_path.string().size() + 1);
-    mut.lock();
-    cout << sv << endl;
-    mut.unlock();
-}
-
 static void RemoveTrailingBlanks(const path& file_path)
 {
     if (ifstream orig_file(file_path); HasTrailingBlanks(orig_file)) {
@@ -82,11 +73,17 @@ static void RemoveTrailingBlanks(const path& file_path)
         temp_file.close();
         rename(temp_path, file_path);
     }
-
-    PrintFile(file_path.string());
 }
 
-static void ProcessDir(const unordered_set<string>& allowed_exts)
+static void PrintFile(const string_view dir_path, string_view file_path)
+{
+    file_path.remove_prefix(dir_path.size() + 1);
+    mut.lock();
+    cout << file_path << endl;
+    mut.unlock();
+}
+
+static void ProcessDir(const path& dir_path, const unordered_set<string>& allowed_exts)
 {
     vector<path> file_paths;
 
@@ -102,7 +99,11 @@ static void ProcessDir(const unordered_set<string>& allowed_exts)
         }
     }
 
-    for_each(execution::par, file_paths.cbegin(), file_paths.cend(), RemoveTrailingBlanks);
+    for_each(execution::par, file_paths.cbegin(), file_paths.cend(),
+        [&dir_path](const auto& file_path) {
+            RemoveTrailingBlanks(file_path);
+            PrintFile(dir_path.string(), file_path.string());
+        });
 }
 
 int main(int argc, char* argv[])
@@ -121,7 +122,7 @@ int main(int argc, char* argv[])
         allowed_exts = { ".h", ".c", ".hpp", ".cpp" };
     }
 
-    ProcessDir(allowed_exts);
+    ProcessDir(current_path(), allowed_exts);
 
     auto end = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);

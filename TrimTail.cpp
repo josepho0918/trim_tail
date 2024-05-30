@@ -1,4 +1,5 @@
-﻿#include <filesystem>
+﻿#include <execution>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -6,6 +7,9 @@
 
 using namespace std;
 using namespace std::filesystem;
+
+static const path dir_path = current_path();
+static mutex mut;
 
 static bool IsWhiteSpace(char ch)
 {
@@ -48,6 +52,14 @@ static optional<string> GetCleanLine(ifstream& file)
     return nullopt;
 }
 
+static void PrintFile(string_view sv)
+{
+    sv.remove_prefix(dir_path.string().size() + 1);
+    mut.lock();
+    cout << sv << endl;
+    mut.unlock();
+}
+
 static void RemoveTrailingBlanks(const path& file_path)
 {
     if (ifstream orig_file(file_path); HasTrailingBlanks(orig_file)) {
@@ -70,10 +82,14 @@ static void RemoveTrailingBlanks(const path& file_path)
         temp_file.close();
         rename(temp_path, file_path);
     }
+
+    PrintFile(file_path.string());
 }
 
-static void ProcessDir(const path& dir_path, const unordered_set<string>& allowed_exts)
+static void ProcessDir(const unordered_set<string>& allowed_exts)
 {
+    vector<path> file_paths;
+
     cout << "Processing directory: " << dir_path.string() << endl;
 
     for (const auto& file : recursive_directory_iterator(dir_path, directory_options::skip_permission_denied)) {
@@ -81,14 +97,12 @@ static void ProcessDir(const path& dir_path, const unordered_set<string>& allowe
             string file_ext = file.path().extension().string();
             ranges::transform(file_ext, file_ext.begin(), ToLowerCase);
             if (allowed_exts.contains(file_ext)) {
-                RemoveTrailingBlanks(file.path());
-                string file_path = file.path().string();
-                string_view sv(file_path);
-                sv.remove_prefix(dir_path.string().size() + 1);
-                cout << sv << endl;
+                file_paths.push_back(file.path());
             }
         }
     }
+
+    for_each(execution::par, file_paths.cbegin(), file_paths.cend(), RemoveTrailingBlanks);
 }
 
 int main(int argc, char* argv[])
@@ -107,7 +121,7 @@ int main(int argc, char* argv[])
         allowed_exts = { ".h", ".c", ".hpp", ".cpp" };
     }
 
-    ProcessDir(current_path(), allowed_exts);
+    ProcessDir(allowed_exts);
 
     auto end = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);

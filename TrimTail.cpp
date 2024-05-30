@@ -78,9 +78,8 @@ static void RemoveTrailingBlanks(const path& file_path)
 static void PrintFile(const string_view dir_path, string_view file_path)
 {
     file_path.remove_prefix(dir_path.size() + 1);
-    mut.lock();
+    lock_guard<mutex> lock(mut);
     cout << file_path << endl;
-    mut.unlock();
 }
 
 static void ProcessDir(const path& dir_path, const unordered_set<string>& allowed_exts)

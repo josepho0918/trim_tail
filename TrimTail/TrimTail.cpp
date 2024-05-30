@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_set>
+#include "TrimTail.h"
 
 using namespace std;
 using namespace std::filesystem;
@@ -20,7 +21,7 @@ static char ToLowerCase(char ch)
     return tolower(static_cast<unsigned char>(ch));
 }
 
-static bool HasTrailingBlanks(ifstream& file)
+bool HasTrailingBlanks(ifstream& file)
 {
     streampos pos = file.tellg();
     bool result = false;
@@ -41,7 +42,7 @@ static bool HasTrailingBlanks(ifstream& file)
     return result;
 }
 
-static optional<string> GetCleanLine(ifstream& file)
+optional<string> GetCleanLine(ifstream& file)
 {
     if (string line; getline(file, line)) {
         line.erase(find_if_not(line.crbegin(), line.crend(), IsWhiteSpace).base(), line.cend());
@@ -51,7 +52,7 @@ static optional<string> GetCleanLine(ifstream& file)
     return nullopt;
 }
 
-static void RemoveTrailingBlanks(const path& file_path)
+void RemoveTrailingBlanks(const path& file_path)
 {
     if (ifstream orig_file(file_path); HasTrailingBlanks(orig_file)) {
         char temp_path[L_tmpnam_s];

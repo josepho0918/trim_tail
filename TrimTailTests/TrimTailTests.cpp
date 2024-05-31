@@ -14,52 +14,52 @@ namespace TrimTailTests
 	{
 	public:
 
-        const path test_file_path = "test.txt";
+        const path TEST_FILE_PATH = "test.txt";
 		
         TEST_METHOD(TestHasTrailingBlanks)
         {
-            ofstream(test_file_path) << "    " << endl;
-            Assert::IsTrue(HasTrailingBlanks(test_file_path));
-            remove(test_file_path);
+            ofstream(TEST_FILE_PATH) << "    " << endl;
+            Assert::IsTrue(HasTrailingBlanks(TEST_FILE_PATH));
+            remove(TEST_FILE_PATH);
 
-            ofstream(test_file_path) << "Hello World    " << endl;
-            Assert::IsTrue(HasTrailingBlanks(test_file_path));
-            remove(test_file_path);
+            ofstream(TEST_FILE_PATH) << "Hello World    " << endl;
+            Assert::IsTrue(HasTrailingBlanks(TEST_FILE_PATH));
+            remove(TEST_FILE_PATH);
 
-            ofstream(test_file_path) << "Hello World" << endl;
-            Assert::IsFalse(HasTrailingBlanks(test_file_path));
-            remove(test_file_path);
+            ofstream(TEST_FILE_PATH) << "Hello World" << endl;
+            Assert::IsFalse(HasTrailingBlanks(TEST_FILE_PATH));
+            remove(TEST_FILE_PATH);
         }
 
         TEST_METHOD(TestGetCleanLine)
         {
 
-            ofstream(test_file_path) << "Hello World    " << endl;
-            Assert::AreEqual("Hello World"s, *GetCleanLine(*make_unique<ifstream>(test_file_path)));
-            remove(test_file_path);
+            ofstream(TEST_FILE_PATH) << "Hello World    " << endl;
+            Assert::AreEqual("Hello World"s, *GetCleanLine(*make_unique<ifstream>(TEST_FILE_PATH)));
+            remove(TEST_FILE_PATH);
 
-            ofstream(test_file_path) << "Hello World\t\t" << endl;
-            Assert::AreEqual("Hello World"s, *GetCleanLine(*make_unique<ifstream>(test_file_path)));
-            remove(test_file_path);
+            ofstream(TEST_FILE_PATH) << "Hello World\t\t" << endl;
+            Assert::AreEqual("Hello World"s, *GetCleanLine(*make_unique<ifstream>(TEST_FILE_PATH)));
+            remove(TEST_FILE_PATH);
         }
 
         TEST_METHOD(TestRemoveTrailingBlanks)
         {
             stringstream buffer;
 
-            ofstream(test_file_path) << "Hello World    ";
-            RemoveTrailingBlanks(test_file_path);
+            ofstream(TEST_FILE_PATH) << "Hello World    ";
+            RemoveTrailingBlanks(TEST_FILE_PATH);
             buffer.str("");
-            buffer << ifstream(test_file_path).rdbuf();
+            buffer << ifstream(TEST_FILE_PATH).rdbuf();
             Assert::AreEqual("Hello World"s, buffer.str());
-            remove(test_file_path);
+            remove(TEST_FILE_PATH);
 
-            ofstream(test_file_path) << "Hello World    " << endl;
-            RemoveTrailingBlanks(test_file_path);
+            ofstream(TEST_FILE_PATH) << "Hello World    " << endl;
+            RemoveTrailingBlanks(TEST_FILE_PATH);
             buffer.str("");
-            buffer << ifstream(test_file_path).rdbuf();
+            buffer << ifstream(TEST_FILE_PATH).rdbuf();
             Assert::AreEqual("Hello World\n"s, buffer.str());
-            remove(test_file_path);
+            remove(TEST_FILE_PATH);
         }
 	};
 }

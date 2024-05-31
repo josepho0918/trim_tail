@@ -2,7 +2,7 @@
 #include "CppUnitTest.h"
 #include <filesystem>
 #include <fstream>
-#include "TrimTail.h"
+#include "TrimTailUtils.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;

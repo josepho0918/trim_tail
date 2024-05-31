@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <ranges>
 #include <string>
 #include <unordered_set>
 #include "TrimTail.h"
@@ -42,7 +43,7 @@ bool HasTrailingBlanks(const path& file_path)
 optional<string> GetCleanLine(ifstream& file)
 {
     if (string line; getline(file, line)) {
-        line.erase(find_if_not(line.crbegin(), line.crend(), IsWhiteSpace).base(), line.cend());
+        line.erase(ranges::find_if_not(line | views::reverse, IsWhiteSpace).base(), line.cend());
         return line;
     }
 

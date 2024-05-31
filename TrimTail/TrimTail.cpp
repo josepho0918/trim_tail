@@ -21,23 +21,20 @@ static char ToLowerCase(char ch)
     return tolower(static_cast<unsigned char>(ch));
 }
 
-bool HasTrailingBlanks(ifstream& file)
+bool HasTrailingBlanks(const path& file_path)
 {
-    streampos pos = file.tellg();
     bool result = false;
-    string line;
 
-    file.seekg(0);
-
-    while (getline(file, line)) {
-        if (!line.empty() && IsWhiteSpace(line.back())) {
-            result = true;
-            break;
+    if (ifstream file(file_path); file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+            if (!line.empty() && IsWhiteSpace(line.back())) {
+                result = true;
+                break;
+            }
         }
+        file.close();
     }
-
-    file.clear();
-    file.seekg(pos);
 
     return result;
 }
@@ -54,7 +51,9 @@ optional<string> GetCleanLine(ifstream& file)
 
 void RemoveTrailingBlanks(const path& file_path)
 {
-    if (ifstream orig_file(file_path); HasTrailingBlanks(orig_file)) {
+    if (!HasTrailingBlanks(file_path)) return;
+    
+    if (ifstream orig_file(file_path); orig_file.is_open()) {
         char temp_path[L_tmpnam_s];
         tmpnam_s(temp_path);
         ofstream temp_file(temp_path);

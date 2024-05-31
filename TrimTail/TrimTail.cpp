@@ -53,7 +53,7 @@ optional<string> GetCleanLine(ifstream& file)
 void RemoveTrailingBlanks(const path& file_path)
 {
     if (!HasTrailingBlanks(file_path)) return;
-    
+
     if (ifstream orig_file(file_path); orig_file.is_open()) {
         char temp_path[L_tmpnam_s];
         tmpnam_s(temp_path);

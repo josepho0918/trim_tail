@@ -22,10 +22,18 @@ namespace TrimTailTests
             ifstream file;
 
             test_file.open(test_file_path);
+            test_file << "    " << endl;
+            test_file.close();
+
+            file.open(test_file_path);
+            Assert::IsTrue(HasTrailingBlanks(file));
+            file.close();
+
+            test_file.open(test_file_path);
             test_file << "Hello World    " << endl;
             test_file.close();
 
-            file.open("test.txt");
+            file.open(test_file_path);
             Assert::IsTrue(HasTrailingBlanks(file));
             file.close();
 

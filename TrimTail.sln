@@ -6,8 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TrimTail", "TrimTail\TrimTail.vcxproj", "{987308D6-0C7C-4C6D-B501-592E01EEA97E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TrimTailTests", "TrimTailTests\TrimTailTests.vcxproj", "{AB7FFEE3-F159-48B7-91E5-BDF0732613BE}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TrimTailUtils", "TrimTailUtils\TrimTailUtils.vcxproj", "{8D068C14-6AC1-4757-BAB2-860D4EBD014F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{987308D6-0C7C-4C6D-B501-592E01EEA97E} = {987308D6-0C7C-4C6D-B501-592E01EEA97E}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,18 +44,6 @@ Global
 		{AB7FFEE3-F159-48B7-91E5-BDF0732613BE}.Release|x64.Build.0 = Release|x64
 		{AB7FFEE3-F159-48B7-91E5-BDF0732613BE}.Release|x86.ActiveCfg = Release|Win32
 		{AB7FFEE3-F159-48B7-91E5-BDF0732613BE}.Release|x86.Build.0 = Release|Win32
-		{8D068C14-6AC1-4757-BAB2-860D4EBD014F}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{8D068C14-6AC1-4757-BAB2-860D4EBD014F}.Debug|ARM64.Build.0 = Debug|ARM64
-		{8D068C14-6AC1-4757-BAB2-860D4EBD014F}.Debug|x64.ActiveCfg = Debug|x64
-		{8D068C14-6AC1-4757-BAB2-860D4EBD014F}.Debug|x64.Build.0 = Debug|x64
-		{8D068C14-6AC1-4757-BAB2-860D4EBD014F}.Debug|x86.ActiveCfg = Debug|Win32
-		{8D068C14-6AC1-4757-BAB2-860D4EBD014F}.Debug|x86.Build.0 = Debug|Win32
-		{8D068C14-6AC1-4757-BAB2-860D4EBD014F}.Release|ARM64.ActiveCfg = Release|ARM64
-		{8D068C14-6AC1-4757-BAB2-860D4EBD014F}.Release|ARM64.Build.0 = Release|ARM64
-		{8D068C14-6AC1-4757-BAB2-860D4EBD014F}.Release|x64.ActiveCfg = Release|x64
-		{8D068C14-6AC1-4757-BAB2-860D4EBD014F}.Release|x64.Build.0 = Release|x64
-		{8D068C14-6AC1-4757-BAB2-860D4EBD014F}.Release|x86.ActiveCfg = Release|Win32
-		{8D068C14-6AC1-4757-BAB2-860D4EBD014F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

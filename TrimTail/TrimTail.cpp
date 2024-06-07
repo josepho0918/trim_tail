@@ -35,7 +35,7 @@ bool HasTrailingBlanks(const path& file_path)
     return false;
 }
 
-optional<string> GetCleanLine(ifstream& file)
+optional<string> GetCleanLine(fstream& file)
 {
     if (string line; getline(file, line)) {
         line.erase(ranges::find_if_not(line | views::reverse, IsWhiteSpace).base(), line.cend());
@@ -49,26 +49,23 @@ void RemoveTrailingBlanks(const path& file_path)
 {
     if (!HasTrailingBlanks(file_path)) return;
 
-    if (ifstream orig_file(file_path); orig_file.is_open()) {
-        char temp_path[L_tmpnam_s];
-        tmpnam_s(temp_path);
-        ofstream temp_file(temp_path);
+    char temp_path[L_tmpnam_s];
+    tmpnam_s(temp_path);
 
-        if (!temp_file.is_open()) {
-            return;
-        }
-
+    if (fstream orig_file(file_path, ios::in),
+        temp_file(temp_path, ios::out | ios::trunc);
+        orig_file.is_open() && temp_file.is_open())
+    {
         while (auto line = GetCleanLine(orig_file)) {
             temp_file << *line;
             if (!orig_file.eof()) {
                 temp_file << '\n';
             }
         }
-
-        orig_file.close();
-        temp_file.close();
-        rename(temp_path, file_path);
     }
+    else return;
+
+    rename(temp_path, file_path);
 }
 
 static void PrintFile(const string_view dir_path, string_view file_path)

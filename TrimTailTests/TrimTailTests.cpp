@@ -35,11 +35,11 @@ namespace TrimTailTests
         {
 
             ofstream(TEST_FILE_PATH) << "Hello World    " << endl;
-            Assert::AreEqual("Hello World"s, *GetCleanLine(*make_unique<ifstream>(TEST_FILE_PATH)));
+            Assert::AreEqual("Hello World"s, *GetCleanLine(*make_unique<fstream>(TEST_FILE_PATH, ios::in)));
             remove(TEST_FILE_PATH);
 
             ofstream(TEST_FILE_PATH) << "Hello World\t\t" << endl;
-            Assert::AreEqual("Hello World"s, *GetCleanLine(*make_unique<ifstream>(TEST_FILE_PATH)));
+            Assert::AreEqual("Hello World"s, *GetCleanLine(*make_unique<fstream>(TEST_FILE_PATH, ios::in)));
             remove(TEST_FILE_PATH);
         }
 

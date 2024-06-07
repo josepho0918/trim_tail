@@ -24,20 +24,15 @@ static char ToLowerCase(char ch)
 
 bool HasTrailingBlanks(const path& file_path)
 {
-    bool result = false;
-
     if (ifstream file(file_path); file.is_open()) {
-        string line;
-        while (getline(file, line)) {
+        for (string line; getline(file, line);) {
             if (!line.empty() && IsWhiteSpace(line.back())) {
-                result = true;
-                break;
+                return true;
             }
         }
-        file.close();
     }
 
-    return result;
+    return false;
 }
 
 optional<string> GetCleanLine(ifstream& file)

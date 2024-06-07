@@ -8,7 +8,7 @@
 #include "TrimTail.h"
 
 using namespace std;
-using namespace std::filesystem;
+namespace fs = std::filesystem;
 
 static mutex mut;
 
@@ -22,7 +22,7 @@ static char ToLowerCase(char ch)
     return tolower(static_cast<unsigned char>(ch));
 }
 
-bool HasTrailingBlanks(const path& file_path)
+bool HasTrailingBlanks(const fs::path& file_path)
 {
     if (ifstream file(file_path); file.is_open()) {
         for (string line; getline(file, line);) {
@@ -45,7 +45,7 @@ optional<string> GetCleanLine(fstream& file)
     return nullopt;
 }
 
-void RemoveTrailingBlanks(const path& file_path)
+void RemoveTrailingBlanks(const fs::path& file_path)
 {
     if (!HasTrailingBlanks(file_path)) return;
 
@@ -75,13 +75,13 @@ static void PrintFile(const string_view dir_path, string_view file_path)
     cout << file_path << endl;
 }
 
-static void ProcessDir(const path& dir_path, const unordered_set<string>& allowed_exts)
+static void ProcessDir(const fs::path& dir_path, const unordered_set<string>& allowed_exts)
 {
-    vector<path> file_paths;
+    vector<fs::path> file_paths;
 
     cout << "Processing directory: " << dir_path.string() << endl;
 
-    for (const auto& file : recursive_directory_iterator(dir_path, directory_options::skip_permission_denied)) {
+    for (const auto& file : fs::recursive_directory_iterator(dir_path, fs::directory_options::skip_permission_denied)) {
         if (file.is_regular_file()) {
             string file_ext = file.path().extension().string();
             ranges::transform(file_ext, file_ext.begin(), ToLowerCase);
@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
         allowed_exts = { ".h", ".c", ".hpp", ".cpp" };
     }
 
-    ProcessDir(current_path(), allowed_exts);
+    ProcessDir(fs::current_path(), allowed_exts);
 
     auto end = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);

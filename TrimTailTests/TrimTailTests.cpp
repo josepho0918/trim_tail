@@ -6,7 +6,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
-using namespace std::filesystem;
+namespace fs = std::filesystem;
 
 namespace TrimTailTests
 {
@@ -14,7 +14,7 @@ namespace TrimTailTests
 	{
 	public:
 
-        const path TEST_FILE_PATH = "test.txt";
+        const fs::path TEST_FILE_PATH = "test.txt";
 		
         TEST_METHOD(TestHasTrailingBlanks)
         {

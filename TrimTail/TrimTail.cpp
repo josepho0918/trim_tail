@@ -68,11 +68,10 @@ void RemoveTrailingBlanks(const fs::path& file_path)
     rename(temp_path, file_path);
 }
 
-static void PrintFile(const string_view dir_path, string_view file_path)
+static void PrintFile(const fs::path& dir_path, const fs::path& file_path)
 {
-    file_path.remove_prefix(dir_path.size() + 1);
     scoped_lock lock(mut);
-    cout << file_path << endl;
+    cout << fs::relative(file_path, dir_path).string() << endl;
 }
 
 static void ProcessDir(const fs::path& dir_path, const unordered_set<string>& allowed_exts)
@@ -94,7 +93,7 @@ static void ProcessDir(const fs::path& dir_path, const unordered_set<string>& al
     for_each(execution::par, file_paths.cbegin(), file_paths.cend(),
         [&dir_path](const auto& file_path) {
             RemoveTrailingBlanks(file_path);
-            PrintFile(dir_path.string(), file_path.string());
+            PrintFile(dir_path, file_path);
         });
 }
 

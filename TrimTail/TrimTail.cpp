@@ -71,7 +71,7 @@ void RemoveTrailingBlanks(const fs::path& file_path)
 static void PrintFile(const string_view dir_path, string_view file_path)
 {
     file_path.remove_prefix(dir_path.size() + 1);
-    lock_guard<mutex> lock(mut);
+    scoped_lock lock(mut);
     cout << file_path << endl;
 }
 

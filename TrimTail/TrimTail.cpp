@@ -1,4 +1,5 @@
-﻿#include <execution>
+﻿#include <boost/filesystem.hpp>
+#include <execution>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -49,8 +50,7 @@ void RemoveTrailingBlanks(const fs::path& file_path)
 {
     if (!HasTrailingBlanks(file_path)) return;
 
-    char temp_path[L_tmpnam_s];
-    tmpnam_s(temp_path);
+    auto temp_path = fs::temp_directory_path() / boost::filesystem::unique_path().string();
 
     if (fstream orig_file(file_path, ios::in),
         temp_file(temp_path, ios::out | ios::trunc);

@@ -46,7 +46,7 @@ jobs:
       run: msbuild /m /p:Configuration=${{matrix.BUILD_CONFIGURATION}} /p:Platform=${{env.BUILD_PLATFORM}} ${{env.SOLUTION_FILE_PATH}}
 
     - name: Test
-      uses: microsoft/vstest-action@v1.0.0
+      uses: josepho0918/vstest-action@main
       with:
         testAssembly: '*Tests.dll'
         searchFolder: ${{env.SOLUTION_FILE_PATH}}/x64/${{matrix.BUILD_CONFIGURATION}}/

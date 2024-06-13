@@ -51,3 +51,4 @@ jobs:
         testAssembly: '*Tests.dll'
         searchFolder: ${{env.SOLUTION_FILE_PATH}}/x64/${{matrix.BUILD_CONFIGURATION}}/
         runInParallel: true
+        resultLogsArtifactName: vs-test-result-logs-${{matrix.BUILD_CONFIGURATION}}

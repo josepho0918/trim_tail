@@ -36,7 +36,7 @@ bool HasTrailingBlanks(const fs::path& file_path)
     return false;
 }
 
-optional<string> GetCleanLine(fstream& file)
+static optional<string> GetCleanLine(fstream& file)
 {
     if (string line; getline(file, line)) {
         line.erase(ranges::find_if_not(line | views::reverse, IsWhiteSpace).base(), line.cend());

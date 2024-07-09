@@ -18,6 +18,36 @@
     <ClCompile Include="TrimTail.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_filesystem-src.codecvt_error_category.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_filesystem-src.directory.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_filesystem-src.exception.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_filesystem-src.operations.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_filesystem-src.path.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_filesystem-src.path_traits.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_filesystem-src.portability.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_filesystem-src.unique_path.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_filesystem-src.utf8_codecvt_facet.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_filesystem-src.windows_file_codecvt.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -31,8 +61,5 @@
     <ResourceCompile Include="TrimTail.rc">
       <Filter>資源檔</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>

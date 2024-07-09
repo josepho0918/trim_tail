@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # VS Code
 .vscode/
+/vcpkg_installed

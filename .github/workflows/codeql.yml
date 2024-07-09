@@ -87,6 +87,15 @@ jobs:
         echo '  make release'
         exit 1
 
+    - name: Setup vcpkg
+      uses: lukka/run-vcpkg@v11
+      with:
+        runVcpkgInstall: true
+        vcpkgJsonGlob: '**/vcpkg.json'
+
+    - name: Integrate vcpkg
+      run: vcpkg integrate install
+
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:

@@ -11,13 +11,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  # Path to the solution file relative to the root of the project.
-  SOLUTION_FILE_PATH: .
-
-  # Platform to build.
-  BUILD_PLATFORM: x64
-
 permissions:
   contents: read
 
@@ -27,7 +20,17 @@ jobs:
 
     strategy:
       matrix:
-        BUILD_CONFIGURATION: [Debug, Release]
+        BUILD_PLATFORM: [x86, x64]
+        include:
+          - BUILD_PLATFORM: x86
+            triplet: x86-windows
+          - BUILD_PLATFORM: x64
+            triplet: x64-windows
+
+    env:
+      SOLUTION_FILE_PATH: .
+      BUILD_CONFIGURATION: Release
+      VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
 
     steps:
     - uses: actions/checkout@v4
@@ -45,15 +48,15 @@ jobs:
       run: vcpkg integrate install
       
     - name: Build
-      working-directory: ${{env.GITHUB_WORKSPACE}}
+      working-directory: ${{ env.GITHUB_WORKSPACE }}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{matrix.BUILD_CONFIGURATION}} /p:Platform=${{env.BUILD_PLATFORM}} ${{env.SOLUTION_FILE_PATH}}
+      run: msbuild /m /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform=${{ matrix.BUILD_PLATFORM }} ${{ env.SOLUTION_FILE_PATH }}
 
     - name: Test
       uses: josepho0918/vstest-action@main
       with:
         testAssembly: '*Tests.dll'
-        searchFolder: ${{env.SOLUTION_FILE_PATH}}/x64/${{matrix.BUILD_CONFIGURATION}}/
+        searchFolder: ${{ env.SOLUTION_FILE_PATH }}/${{ matrix.BUILD_PLATFORM == 'x86' && env.BUILD_CONFIGURATION || format('{0}/{1}', matrix.BUILD_PLATFORM, env.BUILD_CONFIGURATION) }}/
         runInParallel: true
-        resultLogsArtifactName: vs-test-result-logs-${{matrix.BUILD_CONFIGURATION}}
+        resultLogsArtifactName: vs-test-result-logs-${{ matrix.BUILD_PLATFORM }}

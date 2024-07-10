@@ -1,5 +1,8 @@
 {
   "dependencies": [
-    "boost-filesystem"
+    {
+      "name": "boost-filesystem",
+      "version>=": "1.85.0"
+    }
   ]
 }

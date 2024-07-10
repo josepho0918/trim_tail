@@ -23,9 +23,9 @@ jobs:
         BUILD_PLATFORM: [x86, x64]
         include:
           - BUILD_PLATFORM: x86
-            triplet: x86-windows
+            triplet: x86-windows-static
           - BUILD_PLATFORM: x64
-            triplet: x64-windows
+            triplet: x64-windows-static
 
     env:
       SOLUTION_FILE_PATH: .

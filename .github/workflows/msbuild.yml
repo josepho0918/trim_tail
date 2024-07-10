@@ -57,6 +57,6 @@ jobs:
       uses: josepho0918/vstest-action@main
       with:
         testAssembly: '*Tests.dll'
-        searchFolder: ${{ env.SOLUTION_FILE_PATH }}/${{ matrix.BUILD_PLATFORM == 'x86' && env.BUILD_CONFIGURATION || format('{0}/{1}', matrix.BUILD_PLATFORM, env.BUILD_CONFIGURATION) }}/
+        searchFolder: ${{ env.SOLUTION_FILE_PATH }}/${{ matrix.BUILD_PLATFORM }}/${{ env.BUILD_CONFIGURATION }}/
         runInParallel: true
         resultLogsArtifactName: vs-test-result-logs-${{ matrix.BUILD_PLATFORM }}

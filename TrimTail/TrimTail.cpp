@@ -20,7 +20,7 @@ static bool IsWhiteSpace(char ch)
 
 static char ToLowerCase(char ch)
 {
-    return tolower(static_cast<unsigned char>(ch));
+    return static_cast<char>(tolower(static_cast<unsigned char>(ch)));
 }
 
 bool HasTrailingBlanks(const fs::path& file_path)

@@ -11,6 +11,16 @@
 using namespace std;
 namespace fs = std::filesystem;
 
+struct StringHash {
+    using is_transparent = void;
+    size_t operator()(string_view sv) const {
+        hash<string_view> hasher;
+        return hasher(sv);
+    }
+};
+
+using StringSet = unordered_set<string, StringHash, equal_to<>>;
+
 static mutex mut;
 
 static bool IsWhiteSpace(char ch)
@@ -74,7 +84,7 @@ static void PrintFile(const fs::path& dir_path, const fs::path& file_path)
     cout << fs::relative(file_path, dir_path).string() << endl;
 }
 
-static void ProcessDir(const fs::path& dir_path, const unordered_set<string>& allowed_exts)
+static void ProcessDir(const fs::path& dir_path, const StringSet& allowed_exts)
 {
     vector<fs::path> file_paths;
 
@@ -100,7 +110,7 @@ static void ProcessDir(const fs::path& dir_path, const unordered_set<string>& al
 int main(int argc, char* argv[])
 {
     auto start = chrono::high_resolution_clock::now();
-    unordered_set<string> allowed_exts;
+    StringSet allowed_exts;
 
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {

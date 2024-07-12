@@ -21,8 +21,6 @@ struct StringHash {
 
 using StringSet = unordered_set<string, StringHash, equal_to<>>;
 
-static mutex mut;
-
 static bool IsWhiteSpace(char ch)
 {
     return isspace(static_cast<unsigned char>(ch));
@@ -82,6 +80,7 @@ void RemoveTrailingBlanks(const fs::path& file_path)
 
 static void PrintFile(const fs::path& dir_path, const fs::path& file_path)
 {
+    static mutex mut;
     scoped_lock lock(mut);
     cout << fs::relative(file_path, dir_path).string() << endl;
 }

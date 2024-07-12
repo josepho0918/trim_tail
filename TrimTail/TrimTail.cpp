@@ -62,8 +62,10 @@ void RemoveTrailingBlanks(const fs::path& file_path)
 
     auto temp_path = fs::temp_directory_path() / boost::filesystem::unique_path().string();
 
-    if (fstream orig_file(file_path, ios::in),
-        temp_file(temp_path, ios::out | ios::trunc);
+    if (auto [orig_file, temp_file] = make_pair<fstream, fstream>(
+            fstream(file_path, ios::in),
+            fstream(temp_path, ios::out | ios::trunc)
+        );
         orig_file.is_open() && temp_file.is_open())
     {
         while (auto line = GetCleanLine(orig_file)) {

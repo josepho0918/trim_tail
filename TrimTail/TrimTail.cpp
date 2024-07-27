@@ -44,7 +44,7 @@ bool HasTrailingBlanks(const fs::path& file_path)
     return false;
 }
 
-static optional<string> GetCleanLine(fstream& file)
+static optional<string> GetCleanLine(ifstream& file)
 {
     if (string line; getline(file, line)) {
         line.erase(ranges::find_if_not(line | views::reverse, IsWhiteSpace).base(), line.cend());
@@ -60,9 +60,9 @@ void RemoveTrailingBlanks(const fs::path& file_path)
 
     auto temp_path = fs::temp_directory_path() / boost::filesystem::unique_path().string();
 
-    if (auto [orig_file, temp_file] = make_pair<fstream, fstream>(
-            fstream(file_path, ios::in),
-            fstream(temp_path, ios::out | ios::trunc)
+    if (auto [orig_file, temp_file] = make_pair<ifstream, ofstream>(
+            ifstream(file_path),
+            ofstream(temp_path)
         );
         orig_file.is_open() && temp_file.is_open())
     {

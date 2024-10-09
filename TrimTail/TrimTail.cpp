@@ -14,8 +14,7 @@ namespace fs = std::filesystem;
 struct StringHash {
     using is_transparent = void;
     size_t operator()(string_view sv) const {
-        hash<string_view> hasher;
-        return hasher(sv);
+        return hash<string_view>{}(sv);
     }
 };
 
@@ -75,7 +74,7 @@ void RemoveTrailingBlanks(const fs::path& file_path)
     }
     else return;
 
-    rename(temp_path, file_path);
+    fs::rename(temp_path, file_path);
 }
 
 static void PrintFile(const fs::path& dir_path, const fs::path& file_path)

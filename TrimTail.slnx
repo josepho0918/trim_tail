@@ -1,0 +1,11 @@
+<Solution>
+  <Configurations>
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="TrimTail/TrimTail.vcxproj" Id="987308d6-0c7c-4c6d-b501-592e01eea97e" />
+  <Project Path="TrimTailTests/TrimTailTests.vcxproj" Id="ab7ffee3-f159-48b7-91e5-bdf0732613be">
+    <BuildDependency Project="TrimTail/TrimTail.vcxproj" />
+  </Project>
+</Solution>

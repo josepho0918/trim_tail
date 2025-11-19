@@ -1,8 +1,8 @@
-﻿#include <boost/filesystem.hpp>
-#include <execution>
+﻿#include <execution>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <random>
 #include <ranges>
 #include <string>
 #include <unordered_set>
@@ -28,6 +28,18 @@ static bool IsWhiteSpace(char ch)
 static char ToLowerCase(char ch)
 {
     return static_cast<char>(tolower(static_cast<unsigned char>(ch)));
+}
+
+static string TempFileName()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<unsigned long long> dist;
+
+    std::stringstream ss;
+    ss << hex << dist(gen);
+
+    return ss.str();
 }
 
 bool HasTrailingBlanks(const fs::path& file_path)
@@ -57,7 +69,7 @@ void RemoveTrailingBlanks(const fs::path& file_path)
 {
     if (!HasTrailingBlanks(file_path)) return;
 
-    auto temp_path = fs::temp_directory_path() / boost::filesystem::unique_path().string();
+    auto temp_path = fs::temp_directory_path() / TempFileName();
 
     if (auto [orig_file, temp_file] = make_pair<ifstream, ofstream>(
             ifstream(file_path),

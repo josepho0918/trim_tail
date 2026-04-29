@@ -39,15 +39,43 @@ jobs:
       uses: microsoft/setup-msbuild@v3
       
     - name: Build
-      working-directory: ${{ env.GITHUB_WORKSPACE }}
+      working-directory: ${{ github.workspace }}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform=${{ matrix.BUILD_PLATFORM }} ${{ env.SOLUTION_FILE_PATH }}
 
-    - name: Test
-      uses: josepho0918/vstest-action@main
+    - name: Find vstest.console.exe
+      id: find-vstest
+      shell: pwsh
+      run: |
+        $vstest = Get-ChildItem -Path "C:\Program Files\Microsoft Visual Studio" `
+          -Recurse -Filter "vstest.console.exe" `
+          -ErrorAction SilentlyContinue `
+          | Select-Object -First 1 -ExpandProperty FullName
+        if (-not $vstest) { throw "vstest.console.exe not found" }
+        Write-Host "Found: $vstest"
+        echo "VSTEST_PATH=$vstest" >> $env:GITHUB_OUTPUT
+
+    - name: Run VSTest
+      shell: pwsh
+      run: |
+        $testDlls = Get-ChildItem `
+          -Path "${{ github.workspace }}/${{ matrix.BUILD_PLATFORM }}/${{ env.BUILD_CONFIGURATION }}/" `
+          -Recurse `
+          -Filter "*Tests.dll" `
+          | Select-Object -ExpandProperty FullName
+        if (-not $testDlls) { throw "No test DLLs found" }
+        Write-Host "Test DLLs found:"
+        $testDlls | ForEach-Object { Write-Host "  $_" }
+        & "${{ steps.find-vstest.outputs.VSTEST_PATH }}" $testDlls `
+          /Platform:${{ matrix.BUILD_PLATFORM }} `
+          /Parallel `
+          /Logger:trx `
+          /ResultsDirectory:"${{ github.workspace }}/TestResults/${{ matrix.BUILD_PLATFORM }}"
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v7
+      if: always()
       with:
-        testAssembly: '*Tests.dll'
-        searchFolder: ${{ env.SOLUTION_FILE_PATH }}/${{ matrix.BUILD_PLATFORM }}/${{ env.BUILD_CONFIGURATION }}/
-        runInParallel: true
-        resultLogsArtifactName: vs-test-result-logs-${{ matrix.BUILD_PLATFORM }}
+        name: vs-test-result-logs-${{ matrix.BUILD_PLATFORM }}
+        path: ${{ github.workspace }}/TestResults/${{ matrix.BUILD_PLATFORM }}/*.trx

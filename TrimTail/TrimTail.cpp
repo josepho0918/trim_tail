@@ -2,8 +2,10 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <optional>
 #include <random>
 #include <ranges>
+#include <sstream>
 #include <string>
 #include <unordered_set>
 #include "TrimTail.h"
@@ -32,11 +34,11 @@ static char ToLowerCase(char ch)
 
 static string TempFileName()
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<unsigned long long> dist;
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<unsigned long long> dist;
 
-    std::stringstream ss;
+    stringstream ss;
     ss << hex << dist(gen);
 
     return ss.str();
